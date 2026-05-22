@@ -6,6 +6,7 @@
   padding: 40px 20px;
   font-family: var(--font-rubik);
   position: relative;
+  background: url('/assets/images/prospects-bg.jpg');
 }
 
 .list-container::before {
@@ -53,12 +54,20 @@
   font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.return-btn i {
+  font-size: 1.1rem;
 }
 
 .return-btn:hover {
   background: #d4b76a;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(201, 169, 96, 0.3);
 }
 
 /* Stats Cards */
@@ -146,23 +155,67 @@
   animation: fadeInUp 0.5s ease-out;
 }
 
-/* Table styles (keep your existing ones) */
+
+/* Hover Card - Follows Mouse */
+.details-hover-card {
+  position: fixed;           /* Changed from absolute to fixed */
+  background: white;
+  border: 2px solid var(--accent-gold);
+  border-radius: 12px;
+  padding: 20px;
+  width: 380px;
+  max-width: 90vw;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+  pointer-events: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.details-hover-card h4 {
+  color: var(--accent-gold);
+  margin-bottom: 12px;
+  font-family: var(--font-teko);
+  font-size: 1.35rem;
+}
+
+.details-hover-card p {
+  color: #333;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+/* Table Row */
+.prospect-row {
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.prospect-row:hover {
+  background: #f8f4eb !important;
+}
+
+/* Make sure table-container has position relative */
 .table-container {
   position: relative;
   z-index: 2;
   background: white;
   border-radius: 12px;
   overflow: hidden;
+  width: 100%;
 }
 
 .prospects-table {
   width: 100%;
   border-collapse: collapse;
+  
 }
 
 .prospects-table thead {
   background: #1a1a1a;
   color: white;
+  
 }
 
 .prospects-table th {
@@ -172,6 +225,7 @@
   font-size: 0.95rem;
   text-transform: uppercase;
   color: #d4b76a;
+  text-align: center;
 }
 
 .prospects-table th i {
@@ -183,6 +237,7 @@
 .prospects-table td {
   padding: 16px 12px;
   border-bottom: 1px solid #f1f1f1;
+  text-align: center;
 }
 
 .name-cell strong {
@@ -254,7 +309,128 @@ tr:hover .name-cell strong {
 }
 
 
+/* ====================== FILTERS SECTION (Aligned with Table) ====================== */
 
+.filters-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  padding: 21px 24px;
+  border-radius: 16px;
+  border: 1px solid #E5E7EB;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Search Bar */
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 380px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #C9A960;
+  font-size: 1.1rem;
+  z-index: 2;
+}
+
+.filter-input {
+  width: 100%;
+  height: 52px;
+  padding: 12px 16px 12px 48px;
+  border: 2px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 1.02rem;
+  background: #F9FAFB;
+  transition: all 0.3s ease;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 4px rgba(201, 169, 96, 0.12);
+}
+
+/* Select Wrappers with Icons */
+.select-wrapper {
+  position: relative;
+  width: 223px;
+}
+
+.select-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #C9A960;
+  font-size: 1.05rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Adjust padding of select to make space for icon */
+.filter-select {
+  width: 100%;
+  height: 52px;
+  padding: 12px 16px 12px 46px;   
+  border: 2px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 1.02rem;
+  background: #F9FAFB;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  color: #4A5565;
+;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 4px rgba(201, 169, 96, 0.12);
+}
+
+/* Custom dropdown arrow */
+.filter-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23C9A960' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.025 2.345 4 3.204 4h9.592c.86 0 1.32 1.025.753 1.658L8.753 11.14a.5.5 0 0 1-.706 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .filters-container {
+    flex-wrap: wrap;
+  }
+  
+  .search-wrapper {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 18px;
+  }
+  
+  .filter-select,
+  .filter-input {
+    width: 100%;
+  }
+}
 
 
 /* Responsive */

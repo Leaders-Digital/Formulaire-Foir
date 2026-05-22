@@ -1,29 +1,46 @@
 import Prospection from '../models/prospection.js';
-import { buildProspectionEmailContent, sendProspectionEmail } from '../utils/mailer.js';
+
+import {
+  buildProspectionEmailContent,
+  sendProspectionEmail,
+} from "../utils/mailer.js";
 
 //router.post('/form/add', createProspection);
 export const createProspection = async (req, res) => {
   try {
     const created = await Prospection.create(req.body);
-
-    // Send email to the user who submitted the form
-    const emailPayload = buildProspectionEmailContent(created);
-
+    
+    // Send confirmation email
     try {
+      const emailContent = buildProspectionEmailContent({
+        nom: created.nom,
+        prenom: created.prenom,
+        email: created.email,
+        numeroTelephone: created.numeroTelephone,
+        localisationProjet: created.localisationProjet,
+        detailsProjet: created.detailsProjet,
+        budgetDisponible: created.budgetDisponible,
+        datePrevueLancement: created.datePrevueLancement,
+      });
+      
       await sendProspectionEmail({
         to: created.email,
-        ...emailPayload,
+        subject: emailContent.subject,
+        text: emailContent.text,
+        html: emailContent.html,
       });
-    } catch (mailErr) {
-      // Do not block prospection creation if email fails
-      console.error('Failed to send prospection email:', mailErr);
-      return res.status(201).json({
-        ...created.toObject?.() ?? created,
-        warning: 'Prospection created, but email could not be sent.',
-      });
+      
+      console.log(`📧 Confirmation email sent to ${created.email}`);
+    } catch (emailError) {
+      console.error('Failed to send email:', emailError);
+      // Don't fail the request if email fails
     }
-
-    res.status(201).json(created);
+    
+    res.status(201).json({
+      success: true,
+      message: 'Prospection created successfully',
+      data: created
+    });
   } catch (err) {
     res.status(400).json({
       message: 'Invalid prospection payload',
@@ -35,7 +52,7 @@ export const createProspection = async (req, res) => {
 //router.get('/form/list', listProspections);
 export const listProspections = async (req, res) => {
   try {
-    const items = await Prospection.find().sort({ createdAt: -1 }).limit(100);
+    const items = await Prospection.find().sort({ createdAt: -1 });
     res.json(items);
   } catch (err) {
     res.status(500).json({
@@ -45,7 +62,7 @@ export const listProspections = async (req, res) => {
   }
 };
 
-// backend/controllers/prospectionController.js
+// router.get('/stats', getProspectionStats);
 export const getProspectionStats = async (req, res) => {
   try {
     const items = await Prospection.find();
